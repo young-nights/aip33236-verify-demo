@@ -1,0 +1,134 @@
+/*
+ * Copyright (c) 2006-2021, RT-Thread Development Team
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Change Logs:
+ * Date           Author       Notes
+ * 2025-09-09     18452       the first version
+ */
+#include "aip33236_driver.h"
+
+
+AIP33236_IC_REG aip33236_reg = {
+        .ID_SOFTWARE_SWITCH = 0x00,
+        .ID_DUTY_CHANNEL1_ADDR = 0x01,
+        .ID_DUTY_CHANNEL2_ADDR = 0x02,
+        .ID_DUTY_CHANNEL3_ADDR = 0x03,
+        .ID_DUTY_CHANNEL4_ADDR = 0x04,
+        .ID_DUTY_CHANNEL5_ADDR = 0x05,
+        .ID_DUTY_CHANNEL6_ADDR = 0x06,
+        .ID_DUTY_CHANNEL7_ADDR = 0x07,
+        .ID_DUTY_CHANNEL8_ADDR = 0x08,
+        .ID_DUTY_CHANNEL9_ADDR = 0x09,
+        .ID_DUTY_CHANNEL10_ADDR = 0x0A,
+        .ID_DUTY_CHANNEL11_ADDR = 0x0B,
+        .ID_DUTY_CHANNEL12_ADDR = 0x0C,
+        .ID_DUTY_CHANNEL13_ADDR = 0x0D,
+        .ID_DUTY_CHANNEL14_ADDR = 0x0E,
+        .ID_DUTY_CHANNEL15_ADDR = 0x0F,
+        .ID_DUTY_CHANNEL16_ADDR = 0x10,
+        .ID_DUTY_CHANNEL17_ADDR = 0x11,
+        .ID_DUTY_CHANNEL18_ADDR = 0x12,
+        .ID_DUTY_CHANNEL19_ADDR = 0x13,
+        .ID_DUTY_CHANNEL20_ADDR = 0x14,
+        .ID_DUTY_CHANNEL21_ADDR = 0x15,
+        .ID_DUTY_CHANNEL22_ADDR = 0x16,
+        .ID_DUTY_CHANNEL23_ADDR = 0x17,
+        .ID_DUTY_CHANNEL24_ADDR = 0x18,
+        .ID_DUTY_CHANNEL25_ADDR = 0x19,
+        .ID_DUTY_CHANNEL26_ADDR = 0x1A,
+        .ID_DUTY_CHANNEL27_ADDR = 0x1B,
+        .ID_DUTY_CHANNEL28_ADDR = 0x1C,
+        .ID_DUTY_CHANNEL29_ADDR = 0x1D,
+        .ID_DUTY_CHANNEL30_ADDR = 0x1E,
+        .ID_DUTY_CHANNEL31_ADDR = 0x1F,
+        .ID_DUTY_CHANNEL32_ADDR = 0x20,
+        .ID_DUTY_CHANNEL33_ADDR = 0x21,
+        .ID_DUTY_CHANNEL34_ADDR = 0x22,
+        .ID_DUTY_CHANNEL35_ADDR = 0x23,
+        .ID_DUTY_CHANNEL36_ADDR = 0x24,
+        .ID_CHANNEL_DATA_UPDATE = 0x25,
+        .ID_CURRENT_SWITCH_CHANNEL1 = 0x26,
+        .ID_CURRENT_SWITCH_CHANNEL2 = 0x27,
+        .ID_CURRENT_SWITCH_CHANNEL3 = 0x28,
+        .ID_CURRENT_SWITCH_CHANNEL4 = 0x29,
+        .ID_CURRENT_SWITCH_CHANNEL5 = 0x2A,
+        .ID_CURRENT_SWITCH_CHANNEL6 = 0x2B,
+        .ID_CURRENT_SWITCH_CHANNEL7 = 0x2C,
+        .ID_CURRENT_SWITCH_CHANNEL8 = 0x2D,
+        .ID_CURRENT_SWITCH_CHANNEL9 = 0x2E,
+        .ID_CURRENT_SWITCH_CHANNEL10 = 0x2F,
+        .ID_CURRENT_SWITCH_CHANNEL11 = 0x30,
+        .ID_CURRENT_SWITCH_CHANNEL12 = 0x31,
+        .ID_CURRENT_SWITCH_CHANNEL13 = 0x32,
+        .ID_CURRENT_SWITCH_CHANNEL14 = 0x33,
+        .ID_CURRENT_SWITCH_CHANNEL15 = 0x34,
+        .ID_CURRENT_SWITCH_CHANNEL16 = 0x35,
+        .ID_CURRENT_SWITCH_CHANNEL17 = 0x36,
+        .ID_CURRENT_SWITCH_CHANNEL18 = 0x37,
+        .ID_CURRENT_SWITCH_CHANNEL19 = 0x38,
+        .ID_CURRENT_SWITCH_CHANNEL20 = 0x39,
+        .ID_CURRENT_SWITCH_CHANNEL21 = 0x3A,
+        .ID_CURRENT_SWITCH_CHANNEL22 = 0x3B,
+        .ID_CURRENT_SWITCH_CHANNEL23 = 0x3C,
+        .ID_CURRENT_SWITCH_CHANNEL24 = 0x3D,
+        .ID_CURRENT_SWITCH_CHANNEL25 = 0x3E,
+        .ID_CURRENT_SWITCH_CHANNEL26 = 0x3F,
+        .ID_CURRENT_SWITCH_CHANNEL27 = 0x40,
+        .ID_CURRENT_SWITCH_CHANNEL28 = 0x41,
+        .ID_CURRENT_SWITCH_CHANNEL29 = 0x42,
+        .ID_CURRENT_SWITCH_CHANNEL30 = 0x43,
+        .ID_CURRENT_SWITCH_CHANNEL31 = 0x44,
+        .ID_CURRENT_SWITCH_CHANNEL32 = 0x45,
+        .ID_CURRENT_SWITCH_CHANNEL33 = 0x46,
+        .ID_CURRENT_SWITCH_CHANNEL34 = 0x47,
+        .ID_CURRENT_SWITCH_CHANNEL35 = 0x48,
+        .ID_CURRENT_SWITCH_CHANNEL36 = 0x49,
+        .ID_ENABLE_ALL_CHANNEL_RES   = 0x4A,
+        .ID_PWM_FREQUENCY_SET        = 0x4B,
+        .ID_HARDWARE_RESET           = 0x4F,
+};
+
+
+
+/**
+ * @brief  aip33236芯片关断方式
+ * @param  void
+ * @return NULL
+ */
+void AIP33236_GPIO_Config(void)
+{
+
+}
+
+
+/**
+ * @brief  aip33236芯片关断方式
+ * @param  void
+ * @return NULL
+ */
+void AIP33236_Reset(AIP33236_SWITCH_MODE mode)
+{
+    if(mode == aip33236_u1_hard){
+
+    }
+    else if(mode == aip33236_u2_hard){
+
+    }
+    else if(mode == aip33236_u1_soft){
+
+    }
+    else if(mode == aip33236_u1_soft){
+
+    }
+}
+
+
+
+
+
+
+
+
+
