@@ -9,6 +9,9 @@
  */
 #include "aip33236_driver.h"
 
+#define DBG_TAG     "AIP33236"
+#define DBG_LVL     DBG_INFO
+#include <rtdbg.h>
 
 AIP33236_IC_REG aip33236_reg = {
         .ID_SOFTWARE_SWITCH = 0x00,
@@ -97,9 +100,22 @@ AIP33236_IC_REG aip33236_reg = {
  * @param  void
  * @return NULL
  */
+#ifndef AIP33236_SDB1_PIN_NUM
+#define AIP33236_SDB1_PIN_NUM   5
+#endif
+#ifndef AIP33236_SDB2_PIN_NUM
+#define AIP33236_SDB2_PIN_NUM   6
+#endif
+
 void AIP33236_GPIO_Config(void)
 {
+    rt_pin_mode(AIP33236_SDB1_PIN_NUM, PIN_MODE_OUTPUT);
+    rt_pin_write(AIP33236_SDB1_PIN_NUM, PIN_HIGH);
+    LOG_I("AIP33236 SDB1 GPIO Config finished!! \r\n");
 
+    rt_pin_mode(AIP33236_SDB2_PIN_NUM, PIN_MODE_OUTPUT);
+    rt_pin_write(AIP33236_SDB2_PIN_NUM, PIN_HIGH);
+    LOG_I("AIP33236 SDB2 GPIO Config finished!! \r\n");
 }
 
 
@@ -108,27 +124,185 @@ void AIP33236_GPIO_Config(void)
  * @param  void
  * @return NULL
  */
-void AIP33236_Reset(AIP33236_SWITCH_MODE mode)
+void AIP33236_Reset(AIP33236_SWITCH_MODE mode, rt_uint8_t power)
 {
-    if(mode == aip33236_u1_hard){
-
+    rt_uint8_t switch_pwr = 0;
+    if(mode == aip33236_u1_hard && power == 1){
+        rt_pin_write(AIP33236_SDB1_PIN_NUM, PIN_HIGH);
     }
-    else if(mode == aip33236_u2_hard){
-
+    else if(mode == aip33236_u1_hard && power == 0){
+        rt_pin_write(AIP33236_SDB1_PIN_NUM, PIN_LOW);
     }
-    else if(mode == aip33236_u1_soft){
-
+    else if(mode == aip33236_u2_hard && power == 1){
+        rt_pin_write(AIP33236_SDB2_PIN_NUM, PIN_HIGH);
     }
-    else if(mode == aip33236_u1_soft){
+    else if(mode == aip33236_u2_hard && power == 0){
+        rt_pin_write(AIP33236_SDB2_PIN_NUM, PIN_LOW);
+    }
+    else if(mode == aip33236_u1_soft && power == 1){
+        switch_pwr = 1;
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_SOFTWARE_SWITCH, &switch_pwr, 1, aip33236_u1_dev);
+    }
+    else if(mode == aip33236_u1_soft && power == 0){
+        switch_pwr = 0;
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_SOFTWARE_SWITCH, &switch_pwr, 1, aip33236_u1_dev);
+    }
+    else if(mode == aip33236_u2_soft && power == 1){
+        switch_pwr = 1;
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_SOFTWARE_SWITCH, &switch_pwr, 1, aip33236_u2_dev);
+    }
+    else if(mode == aip33236_u2_soft && power == 0){
+        switch_pwr = 0;
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_SOFTWARE_SWITCH, &switch_pwr, 1, aip33236_u2_dev);
+    }
+}
 
+
+
+/**
+ * @brief  aip33236占空比设置
+ * @param  duty: 0x00~0xFF
+ *         channel: 1~36
+ * @return void
+ */
+void AIP33236_PWM_Duty_Set(AIP33236_DEV_NUM dev, rt_uint8_t duty, rt_uint8_t channel)
+{
+    rt_uint8_t pwm_channel = 0;
+    pwm_channel = channel + aip33236_reg.ID_DUTY_CHANNEL1_ADDR - 1;
+
+    if(dev == aip33236_u1_dev){
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, pwm_channel, &duty, 1, aip33236_u1_dev);
+    }
+    else if(dev == aip33236_u2_dev){
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, pwm_channel, &duty, 1, aip33236_u2_dev);
+    }
+}
+
+
+
+/**
+ * @brief  aip33236 通道 电流 和 开关控制
+ * @param  cmd: 更新 nP[7:0]、nI[7:0]、nE寄存器值到输出端指令
+ *         channel: 1~36
+ * @return void
+ */
+void AIP33236_PWM_Switch_Current_Set(AIP33236_DEV_NUM dev, rt_uint8_t cmd, rt_uint8_t channel)
+{
+    rt_uint8_t pwm_channel = 0;
+    pwm_channel = channel + aip33236_reg.ID_CURRENT_SWITCH_CHANNEL1 - 1;
+
+    if(dev == aip33236_u1_dev){
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, pwm_channel, &cmd, 1, aip33236_u1_dev);
+    }
+    else if(dev == aip33236_u2_dev){
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, pwm_channel, &cmd, 1, aip33236_u2_dev);
+    }
+}
+
+
+
+/**
+ * @brief  aip33236 的通道数据更新
+ * @param  dev 选择指定设备
+ * @return void
+ */
+void AIP33236_Channel_Data_Update(AIP33236_DEV_NUM dev)
+{
+    rt_uint8_t data = 0x00;
+    if(dev == aip33236_u1_dev){
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_CHANNEL_DATA_UPDATE, &data, 1, aip33236_u1_dev);
+    }
+    else if(dev == aip33236_u2_dev){
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_CHANNEL_DATA_UPDATE, &data, 1, aip33236_u2_dev);
     }
 }
 
 
 
 
+/**
+ * @brief  使能所有通道
+ * @param  dev 选择指定设备
+ *         data : 0 --> 打开总使能
+ *                1 --> 关闭总使能
+ * @return void
+ */
+void AIP33236_Enable_all_Channel_Res(AIP33236_DEV_NUM dev, rt_uint8_t data)
+{
+    if(dev == aip33236_u1_dev){
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_ENABLE_ALL_CHANNEL_RES, &data, 1, aip33236_u1_dev);
+    }
+    else if(dev == aip33236_u2_dev){
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_ENABLE_ALL_CHANNEL_RES, &data, 1, aip33236_u2_dev);
+    }
+}
 
 
 
+/**
+ * @brief  频率设置
+ * @param  dev 选择指定设备
+ *         data: 0 --> 端口PWM频率为3Khz
+ *               1 --> 端口PWM频率为22Khz
+ * @return void
+ */
+void AIP33236_PWM_Frequency_Set(AIP33236_DEV_NUM dev, rt_uint8_t data)
+{
+    if(dev == aip33236_u1_dev){
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_PWM_FREQUENCY_SET, &data, 1, aip33236_u1_dev);
+    }
+    else if(dev == aip33236_u2_dev){
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_PWM_FREQUENCY_SET, &data, 1, aip33236_u2_dev);
+    }
+}
+
+
+
+/**
+ * @brief  软件复位
+ * @param  dev 选择指定设备
+ * @return void
+ */
+void AIP33236_Hardware_Reset(AIP33236_DEV_NUM dev)
+{
+    rt_uint8_t data = 0x00;
+    if(dev == aip33236_u1_dev){
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_HARDWARE_RESET, &data, 1, aip33236_u1_dev);
+    }
+    else if(dev == aip33236_u2_dev){
+        iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_HARDWARE_RESET, &data, 1, aip33236_u2_dev);
+    }
+}
+
+
+
+
+/**
+ * @brief  设置指定RGB灯的颜色
+ * @param  dev 选择指定设备
+ * @return void
+ */
+void AIP33236_Set_RGB_Color(AIP33236_DEV_NUM dev, RGB_LED_NUMBER led_num, RGB_COLOR_NUMBER color)
+{
+    if(dev == aip33236_u1_dev){
+        switch(led_num)
+        {
+            case RGB_LED_1:
+            {
+
+            }break;
+
+            case RGB_LED_2:
+            {
+
+            }break;
+
+            default: break;
+        }
+    }
+    else if(dev == aip33236_u2_dev){
+
+    }
+}
 
 

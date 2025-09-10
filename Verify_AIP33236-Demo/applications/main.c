@@ -9,6 +9,8 @@
  */
 
 #include <rtthread.h>
+#include "bsp_sys.h"
+
 
 #define DBG_TAG "main"
 #define DBG_LVL DBG_LOG
@@ -16,12 +18,17 @@
 
 int main(void)
 {
-    int count = 1;
+    /* iic初始化 */
+    aip33236_device_init();
+    /* 相关引脚初始化 */
+    AIP33236_GPIO_Config();
+    /* 设置占空比 */
+    AIP33236_PWM_Duty_Set(aip33236_u1_dev,0x96,1);
 
-    while (count++)
+    for(;;)
     {
-        LOG_D("Hello RT-Thread!");
-        rt_thread_mdelay(1000);
+
+        rt_thread_mdelay(500);
     }
 
     return RT_EOK;

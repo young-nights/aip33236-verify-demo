@@ -43,20 +43,20 @@ void aip33236_device_init(void)
  *         *i2c_reg : 寄存器地址(传入的是地址指针)
  * @return
  */
-rt_err_t iic_aip33236_write_reg(struct rt_i2c_bus_device *bus, rt_uint8_t *i2c_reg, AIP33236_DEV_NUM udev)
+rt_err_t iic_aip33236_write_reg(struct rt_i2c_bus_device *bus, rt_uint8_t *i2c_reg, rt_uint8_t udev)
 {
     /* 定义IIC消息结构体 */
     struct rt_i2c_msg   aip33236_msg;
     rt_uint8_t *SendDat;
     SendDat = i2c_reg;
 
-    if(udev == aip33236_u1){
+    if(udev == aip33236_u1_dev){
         aip33236_msg.addr  = aip33236_iic.i2c_addr_u1;
         aip33236_msg.flags = RT_I2C_WR;
         aip33236_msg.buf   = SendDat; /* 这里传递的是数据变量的地址 */
         aip33236_msg.len   = 1;
     }
-    else if(udev == aip33236_u2){
+    else if(udev == aip33236_u2_dev){
         aip33236_msg.addr  = aip33236_iic.i2c_addr_u2;
         aip33236_msg.flags = RT_I2C_WR;
         aip33236_msg.buf   = SendDat; /* 这里传递的是数据变量的地址 */
@@ -86,7 +86,7 @@ rt_err_t iic_aip33236_write_reg_nbytes(struct rt_i2c_bus_device *bus,
                                       rt_uint8_t reg,
                                       rt_uint8_t *data,
                                       rt_size_t n,
-                                      AIP33236_DEV_NUM udev)
+                                      rt_uint8_t udev)
 {
     /* 构造一次完整的消息：reg + data[0..n-1] */
     rt_uint8_t buf[32];                 /* 根据实际一次传输长度调整大小 */
@@ -97,13 +97,13 @@ rt_err_t iic_aip33236_write_reg_nbytes(struct rt_i2c_bus_device *bus,
     rt_memcpy(&buf[1], data, n);
     struct rt_i2c_msg msg;
 
-    if(udev == aip33236_u1){
+    if(udev == aip33236_u1_dev){
         msg.addr  = aip33236_iic.i2c_addr_u1;
         msg.flags = RT_I2C_WR;
         msg.buf   = buf;
         msg.len   = n + 1;                  /* 加上寄存器地址本身的长度 */
     }
-    else if(udev == aip33236_u2){
+    else if(udev == aip33236_u2_dev){
         msg.addr  = aip33236_iic.i2c_addr_u2;
         msg.flags = RT_I2C_WR;
         msg.buf   = buf;
@@ -124,7 +124,7 @@ rt_err_t iic_aip33236_write_reg_nbytes(struct rt_i2c_bus_device *bus,
  *         *data_buf: 数组地址(传入的是地址指针)
  * @return
  */
-rt_err_t iic_aip33236_write_reg_datas(struct rt_i2c_bus_device *bus,rt_uint8_t* data_buf,AIP33236_DEV_NUM udev)
+rt_err_t iic_aip33236_write_reg_datas(struct rt_i2c_bus_device *bus,rt_uint8_t* data_buf,rt_uint8_t udev)
 {
     /* 定义IIC消息结构体 */
     struct rt_i2c_msg   aip33236_msg;
@@ -134,13 +134,13 @@ rt_err_t iic_aip33236_write_reg_datas(struct rt_i2c_bus_device *bus,rt_uint8_t* 
 
     len = sizeof(SendDat);
 
-    if(udev == aip33236_u1){
+    if(udev == aip33236_u1_dev){
         aip33236_msg.addr  = aip33236_iic.i2c_addr_u1;
         aip33236_msg.flags = RT_I2C_WR;
         aip33236_msg.buf   = SendDat;
         aip33236_msg.len   = len;
     }
-    else if(udev == aip33236_u2){
+    else if(udev == aip33236_u2_dev){
         aip33236_msg.addr  = aip33236_iic.i2c_addr_u2;
         aip33236_msg.flags = RT_I2C_WR;
         aip33236_msg.buf   = SendDat;
@@ -168,17 +168,17 @@ rt_err_t iic_aip33236_write_reg_datas(struct rt_i2c_bus_device *bus,rt_uint8_t* 
  *          i2c_dat : 读取数据存入的数组
  * @return
  */
-rt_err_t iic_aip33236_read_reg(struct rt_i2c_bus_device *bus, rt_uint8_t len,rt_uint8_t* i2c_dat, AIP33236_DEV_NUM udev)
+rt_err_t iic_aip33236_read_reg(struct rt_i2c_bus_device *bus, rt_uint8_t len,rt_uint8_t* i2c_dat, rt_uint8_t udev)
 {
     struct  rt_i2c_msg  aip33236_msg;
 
-    if(udev == aip33236_u1){
+    if(udev == aip33236_u1_dev){
         aip33236_msg.addr  = aip33236_iic.i2c_addr_u1;
         aip33236_msg.flags = RT_I2C_RD;
         aip33236_msg.buf   = i2c_dat;
         aip33236_msg.len   = len;
     }
-    else if(udev == aip33236_u2){
+    else if(udev == aip33236_u2_dev){
         aip33236_msg.addr  = aip33236_iic.i2c_addr_u2;
         aip33236_msg.flags = RT_I2C_RD;
         aip33236_msg.buf   = i2c_dat;

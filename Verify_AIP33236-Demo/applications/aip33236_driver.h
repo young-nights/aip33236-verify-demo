@@ -108,4 +108,56 @@ typedef enum
 }AIP33236_SWITCH_MODE;
 
 
+typedef enum
+{
+    aip33236_u1_dev = 1,
+    aip33236_u2_dev,
+}AIP33236_DEV_NUM;
+
+
+typedef enum
+{
+    RGB_LED_1 = 1,
+    RGB_LED_2,
+    RGB_LED_3,
+    RGB_LED_4,
+    RGB_LED_5,
+    RGB_LED_6,
+    RGB_LED_7,
+    RGB_LED_8,
+    RGB_LED_9,
+    RGB_LED_10,
+    RGB_LED_11,
+    RGB_LED_12,
+    RGB_LED_13,
+    RGB_LED_14,
+    RGB_LED_15,
+    RGB_LED_16,
+    RGB_LED_17,
+    RGB_LED_18,
+    RGB_LED_19,
+    RGB_LED_20
+}RGB_LED_NUMBER;
+
+
+typedef enum
+{
+    RGB_RED = 1,
+    RGB_BLUE,
+    RGB_CUSTOM
+}RGB_COLOR_NUMBER;
+
+
+// 函数声明---------------------------------------------
+void AIP33236_GPIO_Config(void);
+void AIP33236_Reset(AIP33236_SWITCH_MODE mode, rt_uint8_t power);
+void AIP33236_PWM_Duty_Set(AIP33236_DEV_NUM dev, rt_uint8_t duty, rt_uint8_t channel);
+void AIP33236_PWM_Switch_Current_Set(AIP33236_DEV_NUM dev, rt_uint8_t cmd, rt_uint8_t channel);
+void AIP33236_Channel_Data_Update(AIP33236_DEV_NUM dev);
+void AIP33236_Enable_all_Channel_Res(AIP33236_DEV_NUM dev, rt_uint8_t data);
+void AIP33236_PWM_Frequency_Set(AIP33236_DEV_NUM dev, rt_uint8_t data);
+void AIP33236_Hardware_Reset(AIP33236_DEV_NUM dev);
+
+
+
 #endif /* APPLICATIONS_AIP33236_DRIVER_H_ */
