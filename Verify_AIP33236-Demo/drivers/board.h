@@ -5,7 +5,7 @@
  *
  * Change Logs:
  * Date           Author       Notes
- * 2025-09-09     RealThread   first version
+ * 2025-09-22     RealThread   first version
  */
 
 #ifndef __BOARD_H__
@@ -23,18 +23,18 @@ extern "C"
 
 #define CHIP_FAMILY_STM32
 #define CHIP_SERIES_STM32F1
-#define CHIP_NAME_STM32F103RE
+#define CHIP_NAME_STM32F103RC
 
 /*-------------------------- CHIP CONFIG END --------------------------*/
 
 /*-------------------------- ROM/RAM CONFIG BEGIN --------------------------*/
 
 #define ROM_START              ((uint32_t)0x08000000)
-#define ROM_SIZE               (512 * 1024)
+#define ROM_SIZE               (256 * 1024)
 #define ROM_END                ((uint32_t)(ROM_START + ROM_SIZE))
 
 #define RAM_START              (0x20000000)
-#define RAM_SIZE               (64 * 1024)
+#define RAM_SIZE               (48 * 1024)
 #define RAM_END                (RAM_START + RAM_SIZE)
 
 /*-------------------------- ROM/RAM CONFIG END --------------------------*/

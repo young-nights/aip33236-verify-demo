@@ -5,14 +5,14 @@
  *
  * Change Logs:
  * Date           Author       Notes
- * 2025-09-09     RealThread   first version
+ * 2025-09-22     RealThread   first version
  */
 
 #include <rtthread.h>
 #include <board.h>
 #include <drv_common.h>
 
-void rt_hw_board_init()
+RT_WEAK void rt_hw_board_init()
 {
     extern void hw_board_init(char *clock_src, int32_t clock_src_freq, int32_t clock_target_freq);
 
@@ -34,8 +34,3 @@ void rt_hw_board_init()
 #endif
 
 }
-
-
-
-
-

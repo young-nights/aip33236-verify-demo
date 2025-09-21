@@ -9,7 +9,12 @@ software：RT-Thread
 
 ## <font size=2>1. RGB灯板接口说明</font>
 <font size=2>为快速验证RGB灯板的可用性,节省焊接成本，本次RGB灯带板的主控板使用自制的STM32F103RET6最小单片机系统板，RGB板为外置的PCB灯板，板上预留IIC引脚接口，以及VDD和GND接口。</font></br>
-![PCB板](./images/ws2812b_images1.jpg)
+
+![PCB板](./images/pic2.jpg)
+
+
+
+
 </br>
 
 

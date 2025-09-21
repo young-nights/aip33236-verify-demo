@@ -18,7 +18,7 @@ config PKGS_DIR
 config PLATFORM_DIR
     string
     option env="PLATFORM_DIR"
-    default  "C:/Users/18452/Documents/Github_youngnights/aip33236-verify-demo/Verify_AIP33236-Demo/platform"
+    default "I:/GitHub-young-nights/aip33236-verify-demo/Verify_AIP33236-Demo/platform"
 
 source "$RTT_DIR/Kconfig"
 source "$PKGS_DIR/Kconfig"
