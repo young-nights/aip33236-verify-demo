@@ -8,9 +8,6 @@
  * 2025-09-09     18452       the first version
  */
 #include "aip33236_driver.h"
-
-#define DBG_TAG     "AIP33236"
-#define DBG_LVL     DBG_INFO
 #include <rtdbg.h>
 
 AIP33236_IC_REG aip33236_reg = {
@@ -100,46 +97,23 @@ AIP33236_IC_REG aip33236_reg = {
  * @param  void
  * @return NULL
  */
-#ifndef AIP33236_SDB1_PIN_NUM
-#define AIP33236_SDB1_PIN_NUM   5
-#endif
-#ifndef AIP33236_SDB2_PIN_NUM
-#define AIP33236_SDB2_PIN_NUM   6
-#endif
-
 void AIP33236_GPIO_Config(void)
 {
-    rt_pin_mode(AIP33236_SDB1_PIN_NUM, PIN_MODE_OUTPUT);
-    rt_pin_write(AIP33236_SDB1_PIN_NUM, PIN_HIGH);
-    LOG_I("AIP33236 SDB1 GPIO Config finished!! \r\n");
-
-    rt_pin_mode(AIP33236_SDB2_PIN_NUM, PIN_MODE_OUTPUT);
-    rt_pin_write(AIP33236_SDB2_PIN_NUM, PIN_HIGH);
-    LOG_I("AIP33236 SDB2 GPIO Config finished!! \r\n");
+    HAL_GPIO_WritePin(AIP33236_SDB_GPIO_Port, AIP33236_SDB_Pin, GPIO_PIN_SET);
+    LOG_I("AIP33236 SDB GPIO Config finished!! \r\n");
 }
 
 
 /**
- * @brief  aip33236芯片关断方式
+ * @brief  aip33236芯片软件关断寄存器配置
  * @param  void
  * @return NULL
  */
-void AIP33236_Reset(AIP33236_SWITCH_MODE mode, rt_uint8_t power)
+void AIP33236_Software_Switch(AIP33236_SWITCH_MODE mode, rt_uint8_t power)
 {
     rt_uint8_t switch_pwr = 0;
-    if(mode == aip33236_u1_hard && power == 1){
-        rt_pin_write(AIP33236_SDB1_PIN_NUM, PIN_HIGH);
-    }
-    else if(mode == aip33236_u1_hard && power == 0){
-        rt_pin_write(AIP33236_SDB1_PIN_NUM, PIN_LOW);
-    }
-    else if(mode == aip33236_u2_hard && power == 1){
-        rt_pin_write(AIP33236_SDB2_PIN_NUM, PIN_HIGH);
-    }
-    else if(mode == aip33236_u2_hard && power == 0){
-        rt_pin_write(AIP33236_SDB2_PIN_NUM, PIN_LOW);
-    }
-    else if(mode == aip33236_u1_soft && power == 1){
+
+    if(mode == aip33236_u1_soft && power == 1){
         switch_pwr = 1;
         iic_aip33236_write_reg_nbytes(aip33236_iic.i2c_bus, aip33236_reg.ID_SOFTWARE_SWITCH, &switch_pwr, 1, aip33236_u1_dev);
     }

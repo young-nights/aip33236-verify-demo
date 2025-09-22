@@ -15,8 +15,8 @@
 /* 软件iic配置参数结构体 */
 typedef struct {
     char           i2c_name[16];
-    rt_uint8_t     i2c_addr_u1;
-    rt_uint8_t     i2c_addr_u2;
+    rt_uint16_t    i2c_addr_u1;
+    rt_uint16_t    i2c_addr_u2;
     struct rt_i2c_bus_device    *i2c_bus;
 }iicStructure_t;
 extern iicStructure_t aip33236_iic;

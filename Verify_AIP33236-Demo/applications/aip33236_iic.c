@@ -12,7 +12,7 @@
 
 iicStructure_t aip33236_iic = {
         .i2c_name       = "i2c1",   /* 设备结点 */
-        .i2c_addr_u1    = 0x78,     /* aip33236-u1的iic地址 */
+        .i2c_addr_u1    = 0x3C,     /* aip33236-u1的iic地址 */
         .i2c_addr_u2    = 0x7E,     /* aip33236-u2的iic地址 */
 
 };
@@ -90,8 +90,11 @@ rt_err_t iic_aip33236_write_reg_nbytes(struct rt_i2c_bus_device *bus,
 {
     /* 构造一次完整的消息：reg + data[0..n-1] */
     rt_uint8_t buf[32];                 /* 根据实际一次传输长度调整大小 */
-    if (n + 1 > sizeof(buf))
+    if (n + 1 > sizeof(buf)){
+        LOG_E("Length is too large.\r\n");
         return RT_ERROR;
+    }
+
 
     buf[0] = reg;
     rt_memcpy(&buf[1], data, n);

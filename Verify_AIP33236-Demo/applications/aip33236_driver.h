@@ -103,8 +103,6 @@ typedef enum
 {
     aip33236_u1_soft = 1,
     aip33236_u2_soft,
-    aip33236_u1_hard,
-    aip33236_u2_hard,
 }AIP33236_SWITCH_MODE;
 
 
@@ -150,7 +148,7 @@ typedef enum
 
 // 函数声明---------------------------------------------
 void AIP33236_GPIO_Config(void);
-void AIP33236_Reset(AIP33236_SWITCH_MODE mode, rt_uint8_t power);
+void AIP33236_Software_Switch(AIP33236_SWITCH_MODE mode, rt_uint8_t power);
 void AIP33236_PWM_Duty_Set(AIP33236_DEV_NUM dev, rt_uint8_t duty, rt_uint8_t channel);
 void AIP33236_PWM_Switch_Current_Set(AIP33236_DEV_NUM dev, rt_uint8_t cmd, rt_uint8_t channel);
 void AIP33236_Channel_Data_Update(AIP33236_DEV_NUM dev);

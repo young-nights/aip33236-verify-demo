@@ -18,6 +18,7 @@
 #include <rthw.h>
 #include <rtdbg.h>
 
+#include "main.h"
 #include "aip33236_driver.h"
 #include "aip33236_iic.h"
 #include "bsp_typedef.h"
