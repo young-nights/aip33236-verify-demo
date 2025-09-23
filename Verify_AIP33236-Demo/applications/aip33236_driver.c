@@ -258,6 +258,7 @@ void AIP33236_Hardware_Reset(AIP33236_DEV_NUM dev)
  */
 void AIP33236_Set_RGB_Color(AIP33236_DEV_NUM dev, RGB_LED_NUMBER led_num, RGB_COLOR_NUMBER color)
 {
+    // -----------------------------------------------------------------------
     if(dev == aip33236_u1_dev){
         switch(led_num)
         {
@@ -274,8 +275,23 @@ void AIP33236_Set_RGB_Color(AIP33236_DEV_NUM dev, RGB_LED_NUMBER led_num, RGB_CO
             default: break;
         }
     }
-    else if(dev == aip33236_u2_dev){
 
+    // -----------------------------------------------------------------------
+    else if(dev == aip33236_u2_dev){
+        switch(led_num)
+        {
+            case RGB_LED_1:
+            {
+
+            }break;
+
+            case RGB_LED_2:
+            {
+
+            }break;
+
+            default: break;
+        }
     }
 }
 

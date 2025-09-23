@@ -47,13 +47,20 @@ int main(void)
   AIP33236_GPIO_Config();
   /* iic初始化 */
   aip33236_device_init();
-  /* 设置占空比 */
+  /* Fre set */
+  AIP33236_PWM_Frequency_Set(aip33236_u1_dev,0);
+  /* 0x00 写 0x01 */
   AIP33236_Software_Switch(aip33236_u1_soft, 1);
-//  AIP33236_PWM_Duty_Set(aip33236_u1_dev,0x96,1);
-//  AIP33236_Enable_all_Channel_Res(aip33236_u1_dev,0);
-//  AIP33236_PWM_Switch_Current_Set(aip33236_u1_dev,0x01,1);
-//  AIP33236_PWM_Frequency_Set(aip33236_u1_dev,0);
-//  AIP33236_Channel_Data_Update(aip33236_u1_dev);
+  /* 0x4A 写 0x00 */
+  AIP33236_Enable_all_Channel_Res(aip33236_u1_dev,0);
+  /* PWM and current set */
+  AIP33236_PWM_Duty_Set(aip33236_u1_dev,0xFF,1);
+  AIP33236_PWM_Switch_Current_Set(aip33236_u1_dev,0x01,1);
+  /* Update channel */
+  AIP33236_Channel_Data_Update(aip33236_u1_dev);
+
+
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

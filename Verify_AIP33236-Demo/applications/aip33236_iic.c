@@ -97,6 +97,7 @@ rt_err_t iic_aip33236_write_reg_nbytes(struct rt_i2c_bus_device *bus,
 
 
     buf[0] = reg;
+
     rt_memcpy(&buf[1], data, n);
     struct rt_i2c_msg msg;
 
