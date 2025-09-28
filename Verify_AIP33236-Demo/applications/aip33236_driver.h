@@ -140,11 +140,15 @@ typedef enum
 
 typedef enum
 {
-    RGB_RED = 1,
+    RGB_RED    = 1,
+    RGB_GREEN,
     RGB_BLUE,
-    RGB_CUSTOM
-}RGB_COLOR_NUMBER;
-
+    RGB_WHITE,
+    RGB_ORANGE,
+    RGB_Seashell,
+    RGB_Gold,
+    RGB_CUSTOM   /* 保留，给用户自定义 */
+} RGB_COLOR_NUMBER;
 
 // 函数声明---------------------------------------------
 void AIP33236_GPIO_Config(void);
@@ -155,7 +159,10 @@ void AIP33236_Channel_Data_Update(AIP33236_DEV_NUM dev);
 void AIP33236_Enable_all_Channel_Res(AIP33236_DEV_NUM dev, rt_uint8_t data);
 void AIP33236_PWM_Frequency_Set(AIP33236_DEV_NUM dev, rt_uint8_t data);
 void AIP33236_Hardware_Reset(AIP33236_DEV_NUM dev);
-
+void AIP33236_Set_RGB_Color(AIP33236_DEV_NUM dev, RGB_LED_NUMBER led_num, RGB_COLOR_NUMBER color);
+void AIP33236_LED_OFF(AIP33236_DEV_NUM dev, RGB_LED_NUMBER led_num);
+void AIP33236_LED_ON(AIP33236_DEV_NUM dev, RGB_LED_NUMBER led_num, RGB_COLOR_NUMBER color);
+void AIP33236_Init(void);
 
 
 #endif /* APPLICATIONS_AIP33236_DRIVER_H_ */

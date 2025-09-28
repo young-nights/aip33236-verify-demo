@@ -21,6 +21,7 @@
 #include "main.h"
 #include "aip33236_driver.h"
 #include "aip33236_iic.h"
+#include "aip33236_flow_light.h"
 #include "bsp_typedef.h"
 
 

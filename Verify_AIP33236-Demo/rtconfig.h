@@ -84,9 +84,7 @@
 #define RT_USING_SERIAL_V1
 #define RT_SERIAL_RB_BUFSZ 1024
 #define RT_USING_I2C
-#define RT_I2C_DEBUG
 #define RT_USING_I2C_BITOPS
-#define RT_I2C_BITOPS_DEBUG
 #define RT_USING_PIN
 
 /* Using USB */

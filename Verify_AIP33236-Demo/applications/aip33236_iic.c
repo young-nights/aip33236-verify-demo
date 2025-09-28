@@ -13,7 +13,7 @@
 iicStructure_t aip33236_iic = {
         .i2c_name       = "i2c1",   /* 设备结点 */
         .i2c_addr_u1    = 0x3C,     /* aip33236-u1的iic地址 */
-        .i2c_addr_u2    = 0x7E,     /* aip33236-u2的iic地址 */
+        .i2c_addr_u2    = 0x3F,     /* aip33236-u2的iic地址 */
 
 };
 

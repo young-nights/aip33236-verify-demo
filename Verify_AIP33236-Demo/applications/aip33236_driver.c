@@ -139,6 +139,7 @@ void AIP33236_Software_Switch(AIP33236_SWITCH_MODE mode, rt_uint8_t power)
  *         channel: 1~36
  * @return void
  */
+
 void AIP33236_PWM_Duty_Set(AIP33236_DEV_NUM dev, rt_uint8_t duty, rt_uint8_t channel)
 {
     rt_uint8_t pwm_channel = 0;
@@ -256,43 +257,113 @@ void AIP33236_Hardware_Reset(AIP33236_DEV_NUM dev)
  * @param  dev 选择指定设备
  * @return void
  */
+
+/* 颜色表：R、G、B 三个通道的占空比 */
+static const struct {
+    rt_uint8_t r;
+    rt_uint8_t g;
+    rt_uint8_t b;
+} rgb_color_tab[] = {
+    [RGB_RED]    = {0xFF, 0x00, 0x00},
+    [RGB_GREEN]  = {0x00, 0xFF, 0x00},
+    [RGB_BLUE]   = {0x00, 0x00, 0xFF},
+    [RGB_WHITE]  = {0xFF, 0xFF, 0xFF},
+    [RGB_ORANGE] = {0xFF, 0x99, 0x00},   /* 0x99 ≈ 60% */
+    [RGB_Seashell] = {0xFF,0xF5,0xEE},
+    [RGB_Gold] = {0xFF,0xD7,0x00},
+};
+
+#define BRIGHT_SHIFT 2        /* 右移 2 位 = 除以 4 */
+
 void AIP33236_Set_RGB_Color(AIP33236_DEV_NUM dev, RGB_LED_NUMBER led_num, RGB_COLOR_NUMBER color)
 {
-    // -----------------------------------------------------------------------
-    if(dev == aip33236_u1_dev){
-        switch(led_num)
-        {
-            case RGB_LED_1:
-            {
-
-            }break;
-
-            case RGB_LED_2:
-            {
-
-            }break;
-
-            default: break;
-        }
+    /* 非法颜色 */
+    if(color == 0 || color > RGB_CUSTOM){
+        return;
     }
 
-    // -----------------------------------------------------------------------
-    else if(dev == aip33236_u2_dev){
-        switch(led_num)
-        {
-            case RGB_LED_1:
-            {
+    /* 每颗灯 3 通道，LED1 起始通道为 1 */
+    rt_uint8_t r_ch = (led_num - 1) * 3 + 1;   /* R */
+    rt_uint8_t g_ch = r_ch + 1;                /* G */
+    rt_uint8_t b_ch = r_ch + 2;                /* B */
 
-            }break;
+    const rt_uint8_t *c = (const rt_uint8_t *)&rgb_color_tab[color];
 
-            case RGB_LED_2:
-            {
+    /* 写占空比 */
+    AIP33236_PWM_Duty_Set(dev, c[0] >> BRIGHT_SHIFT, r_ch);
+    AIP33236_PWM_Duty_Set(dev, c[1] >> BRIGHT_SHIFT, g_ch);
+    AIP33236_PWM_Duty_Set(dev, c[2] >> BRIGHT_SHIFT, b_ch);
 
-            }break;
-
-            default: break;
-        }
-    }
+    /* 打开对应通道输出（0x01=开，0x00=关） */
+     AIP33236_PWM_Switch_Current_Set(dev, 0x01, r_ch);
+     AIP33236_PWM_Switch_Current_Set(dev, 0x01, g_ch);
+     AIP33236_PWM_Switch_Current_Set(dev, 0x01, b_ch);
 }
 
+
+
+
+
+/* 关闭一颗灯 */
+void AIP33236_LED_OFF(AIP33236_DEV_NUM dev, RGB_LED_NUMBER led_num)
+{
+    rt_uint8_t r_ch = (led_num - 1) * 3 + 1;
+    AIP33236_PWM_Duty_Set(dev, 0x00, r_ch);   /* R */
+    AIP33236_PWM_Duty_Set(dev, 0x00, r_ch + 1); /* G */
+    AIP33236_PWM_Duty_Set(dev, 0x00, r_ch + 2); /* B */
+
+    /* 打开对应通道输出（0x01=开，0x00=关） */
+     AIP33236_PWM_Switch_Current_Set(dev, 0x01, r_ch);
+     AIP33236_PWM_Switch_Current_Set(dev, 0x01, r_ch +1 );
+     AIP33236_PWM_Switch_Current_Set(dev, 0x01, r_ch + 2);
+
+    AIP33236_Channel_Data_Update(dev);
+}
+
+
+
+/* 点亮一颗灯，指定颜色索引 0/1/2/3 */
+void AIP33236_LED_ON(AIP33236_DEV_NUM dev, RGB_LED_NUMBER led_num, RGB_COLOR_NUMBER color)
+{
+    /* 每颗灯 3 通道，LED1 起始通道为 1 */
+    rt_uint8_t r_ch = (led_num - 1) * 3 + 1;   /* R */
+    rt_uint8_t g_ch = r_ch + 1;                /* G */
+    rt_uint8_t b_ch = r_ch + 2;                /* B */
+
+    const rt_uint8_t *c = (const rt_uint8_t *)&rgb_color_tab[color];
+
+    AIP33236_PWM_Duty_Set(dev, c[0] >> BRIGHT_SHIFT, r_ch);
+    AIP33236_PWM_Duty_Set(dev, c[1] >> BRIGHT_SHIFT, g_ch);
+    AIP33236_PWM_Duty_Set(dev, c[2] >> BRIGHT_SHIFT, b_ch);
+
+    /* 打开对应通道输出（0x01=开，0x00=关） */
+     AIP33236_PWM_Switch_Current_Set(dev, 0x01, r_ch);
+     AIP33236_PWM_Switch_Current_Set(dev, 0x01, g_ch);
+     AIP33236_PWM_Switch_Current_Set(dev, 0x01, b_ch);
+
+    AIP33236_Channel_Data_Update(dev);
+}
+
+
+
+/* 初始化操作 */
+void AIP33236_Init(void)
+{
+    AIP33236_GPIO_Config();
+    /* iic初始化 */
+    aip33236_device_init();
+    /* Fre set */
+    AIP33236_PWM_Frequency_Set(aip33236_u1_dev,0);
+    /* 0x00 写 0x01 */
+    AIP33236_Software_Switch(aip33236_u1_soft, 1);
+    /* 0x4A 写 0x00 */
+    AIP33236_Enable_all_Channel_Res(aip33236_u1_dev,0);
+
+    /* Fre set */
+    AIP33236_PWM_Frequency_Set(aip33236_u2_dev,0);
+    /* 0x00 写 0x01 */
+    AIP33236_Software_Switch(aip33236_u2_soft, 1);
+    /* 0x4A 写 0x00 */
+    AIP33236_Enable_all_Channel_Res(aip33236_u2_dev,0);
+}
 
